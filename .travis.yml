@@ -33,6 +33,12 @@ before_script:
  - if [ $DB == "mysql" ]; then mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" -u$DB_USER ; fi
  - if [ $DB == "postgresql" ]; then psql -c "CREATE DATABASE $DB_NAME;" -U $DB_USER ; psql -c "CREATE EXTENSION pgcrypto;" -U $DB_USER $DB_NAME ; fi
  - composer install --prefer-source
+ # Importing ezmbpaex SQL file
+ - if [ $DB == "mysql" ]; then mysql -u$DB_USER $DB_NAME < extension/ezmbpaex/sql/mysql/mbpaex.sql ; fi
+ - if [ $DB == "postgresql" ]; then psql -d $DB_NAME -U $DB_USER -f extension/ezmbpaex/sql/postgresql/mbpaex.sql ; fi
+ # Importing ezsi SQL file
+ - if [ $DB == "mysql" ]; then mysql -u$DB_USER $DB_NAME < extension/ezsi/sql/mysql/schema.sql ; fi
+ - if [ $DB == "postgresql" ]; then psql -d $DB_NAME -U $DB_USER -f extension/ezsi/sql/postgresql/schema.sql -U $DB_USER ; fi
  - php bin/php/ezpgenerateautoloads.php -s -e
  # Detecting timezone issues by testing on random timezone
  - declare -a TIMEZONES=("America/New_York" "Asia/Calcutta" "UTC")
